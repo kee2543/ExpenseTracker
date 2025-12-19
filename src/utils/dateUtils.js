@@ -22,7 +22,6 @@ const getLastWorkingDayOfMonth = (year, month) => {
 const getFinancialMonthStart = (currentDate = new Date()) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
   const prevMonth = month === 0 ? 11 : month - 1;
   const prevMonthYear = month === 0 ? year - 1 : year;
 
@@ -33,9 +32,7 @@ const getFinancialMonthStart = (currentDate = new Date()) => {
 const getFinancialMonthEnd = (currentDate = new Date()) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
   const nextPayDay = getLastWorkingDayOfMonth(year, month);
-
   const end = new Date(nextPayDay);
   end.setDate(end.getDate() - 1);
 

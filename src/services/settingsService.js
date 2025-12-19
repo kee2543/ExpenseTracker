@@ -1,11 +1,12 @@
-import { db } from "../db/database";
+const { db } = require('../db/database');
 
-// Save or update a setting by key
-export const setSetting = async (key, value) => {
-	return await db.settings.put({ key, value });
+const setMonthlyIncome = async amount => {
+await db.settings.put({ key: 'monthlyIncome', value: amount });
 };
 
-// Retrieve a setting by key
-export const getSetting = async (key) => {
-	return await db.settings.get(key);
+const getMonthlyIncome = async () => {
+const entry = await db.settings.get('monthlyIncome');
+return entry ? entry.value : 0;
 };
+
+module.exports = { setMonthlyIncome, getMonthlyIncome };
