@@ -1,48 +1,51 @@
-import { isIndianHoliday } from "./holidayUtils.js";
+const { isIndianHoliday } = require("./holidayUtils.js");
 
 // Check if a date is a weekend
-export const isWeekend = (date) => {
-  const day = date.getDay(); // 0 = Sunday, 6 = Saturday
+const isWeekend = (date) => {
+  const day = date.getDay();
   return day === 0 || day === 6;
 };
 
 // Check if a date is a working day
-export const isWorkingDay = (date) => {
-  return !isWeekend(date) && !isIndianHoliday(date);
+const isWorkingDay = (date) => !isWeekend(date) && !isIndianHoliday(date);
+
+// Get the last working day of a given month
+const getLastWorkingDayOfMonth = (year, month) => {
+  let date = new Date(year, month + 1, 0); // last calendar day of month
+  while (!isWorkingDay(date)) {
+    date.setDate(date.getDate() - 1);
+  }
+  return date;
 };
 
-// Get the start date of the financial month based on pay day
-export const getFinancialMonthStart = (payDay, currentDate = new Date()) => {
+// Get financial month start = last working day of previous month
+const getFinancialMonthStart = (currentDate = new Date()) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  let start = new Date(year, month, payDay);
+  const prevMonth = month === 0 ? 11 : month - 1;
+  const prevMonthYear = month === 0 ? year - 1 : year;
 
-  // If current date is before payDay, start is previous month
-  if (currentDate < start) {
-    start = new Date(year, month - 1, payDay);
-  }
-
-  return start;
+  return getLastWorkingDayOfMonth(prevMonthYear, prevMonth);
 };
 
-// Get the end date of the financial month based on pay day
-export const getFinancialMonthEnd = (payDay, currentDate = new Date()) => {
-  const start = getFinancialMonthStart(payDay, currentDate);
-  let nextMonth = new Date(start.getFullYear(), start.getMonth() + 1, payDay);
+// Get financial month end = day before next pay day (last working day of current month)
+const getFinancialMonthEnd = (currentDate = new Date()) => {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
-  // Go backwards to find the second last working day
-  let end = new Date(nextMonth.getTime() - 1 * 24 * 60 * 60 * 1000); // One day before next pay day
-  let workingDaysCount = 0;
+  const nextPayDay = getLastWorkingDayOfMonth(year, month);
 
-  while (workingDaysCount < 2) {
-    if (isWorkingDay(end)) {
-      workingDaysCount++;
-    }
-    if (workingDaysCount < 2) {
-      end.setDate(end.getDate() - 1);
-    }
-  }
+  const end = new Date(nextPayDay);
+  end.setDate(end.getDate() - 1);
 
   return end;
+};
+
+module.exports = {
+  isWeekend,
+  isWorkingDay,
+  getLastWorkingDayOfMonth,
+  getFinancialMonthStart,
+  getFinancialMonthEnd,
 };
