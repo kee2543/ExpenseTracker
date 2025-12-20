@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* ===== BASE STYLES ===== */
 body {
   background: #f5f7fb;
@@ -64,21 +70,32 @@ body {
   display: flex;
   gap: 10px;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  width: 100%;
 }
+
 
 .form-row input,
 .form-row select {
   flex: 1;
 }
 
+.form-row button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+
 /* ===== INPUTS ===== */
 input,
 select {
+  width: 100%;
+  max-width: 100%;
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid #ddd;
 }
+
 
 /* ===== BUTTONS ===== */
 button {
