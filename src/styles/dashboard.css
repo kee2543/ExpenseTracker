@@ -1,6 +1,8 @@
+/* ===== BASE STYLES ===== */
 body {
   background: #f5f7fb;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
 }
 
 .dashboard {
@@ -9,7 +11,7 @@ body {
   padding: 16px;
 }
 
-/* Cards */
+/* ===== CARDS ===== */
 .card {
   background: white;
   border-radius: 14px;
@@ -18,30 +20,67 @@ body {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
-/* Summary */
-.summary {
+/* ===== HEADER ===== */
+.dashboard-header {
   display: flex;
   justify-content: space-between;
-  text-align: center;
+  align-items: center;
 }
 
-.summary div {
+/* ===== SUMMARY ROW ===== */
+.summary-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.summary-box {
+  flex: 1;
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.summary-box p {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.summary-box strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+}
+
+/* DARK MODE SUPPORT */
+.dark .summary-box {
+  color: #e0e0e0;
+}
+
+/* ===== FORM ROWS ===== */
+.form-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.form-row input,
+.form-row select {
   flex: 1;
 }
 
-.income {
-  color: #2e7d32;
+/* ===== INPUTS ===== */
+input,
+select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
 }
 
-.spent {
-  color: #c62828;
-}
-
-.remaining {
-  color: #1565c0;
-}
-
-/* Buttons */
+/* ===== BUTTONS ===== */
 button {
   border: none;
   padding: 8px 12px;
@@ -55,33 +94,37 @@ button:active {
   transform: scale(0.97);
 }
 
-/* Inputs */
-input,
-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-}
-
-/* Lists */
+/* ===== LIST ITEMS ===== */
 .list-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
 }
 
-@media (max-width: 480px) {
-  h2 {
-    text-align: center;
-  }
+.item-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.item-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.list-item input {
+  width: auto;
+  min-width: 80px;
+  padding: 6px;
+}
+
+.list-item input[type="number"] {
+  max-width: 90px;
 }
 
 /* ===== DARK MODE ===== */
-
 .dark {
   background: #121212;
   color: #e0e0e0;
@@ -89,7 +132,6 @@ select {
 
 .dark .card {
   background: #1e1e1e;
-  box-shadow: none;
 }
 
 .dark input,
@@ -104,13 +146,13 @@ select {
 }
 
 .dark .income {
-  color: #66bb6a;
+  background: #1b3b1b;
 }
 
 .dark .spent {
-  color: #ef5350;
+  background: #3b1b1b;
 }
 
 .dark .remaining {
-  color: #42a5f5;
+  background: #1b1b3b;
 }

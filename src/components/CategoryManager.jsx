@@ -1,25 +1,36 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  addCategory,
   getCategories,
-  deleteCategory
-} from "../services/categoryService.js";
+  addCategory,
+  updateCategory,
+  deleteCategory,
+} from "../services/categoryService";
 
-export default function CategoryManager() {
-  const [name, setName] = useState("");
+const CategoryManager = () => {
   const [categories, setCategories] = useState([]);
+  const [name, setName] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editValue, setEditValue] = useState("");
 
   const load = async () => {
-    setCategories(await getCategories());
+    const data = await getCategories();
+    setCategories(data || []);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
-  const save = async () => {
+  const add = async () => {
     if (!name) return;
-    await addCategory({ id: crypto.randomUUID(), name });
+    await addCategory({ name });
     setName("");
+    load();
+  };
+
+  const save = async (id) => {
+    await updateCategory(id, { name: editValue });
+    setEditingId(null);
     load();
   };
 
@@ -27,20 +38,41 @@ export default function CategoryManager() {
     <div>
       <h3>Categories</h3>
 
-      <input placeholder="New category"
-        value={name} onChange={e => setName(e.target.value)} />
+      <div className="form-row">
+        <input
+          placeholder="New category"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <button onClick={add}>Add</button>
+      </div>
 
-      <button onClick={save}>Add</button>
-
-      {categories.map(c => (
-        <div key={c.id}>
-          {c.name}
-          <button onClick={async () => {
-            await deleteCategory(c.id);
-            load();
-          }}>❌</button>
+      {categories.map((c) => (
+        <div key={c.id} className="list-item">
+          {editingId === c.id ? (
+            <>
+              <input
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+              />
+              <div className="item-actions">
+                <button onClick={() => save(c.id)}>💾</button>
+                <button onClick={() => setEditingId(null)}>❌</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="item-name">{c.name}</span>
+              <div className="item-actions">
+                <button onClick={() => { setEditingId(c.id); setEditValue(c.name); }}>✏️</button>
+                <button onClick={() => deleteCategory(c.id).then(load)}>🗑️</button>
+              </div>
+            </>
+          )}
         </div>
       ))}
     </div>
   );
-}
+};
+
+export default CategoryManager;

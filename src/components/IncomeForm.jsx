@@ -1,37 +1,52 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { addIncome } from "../services/incomingService";
 
-export default function IncomeForm({ onSaved }) {
-  const [name, setName] = useState("");
+const IncomeForm = ({ onSaved }) => {
   const [amount, setAmount] = useState("");
+  const [source, setSource] = useState("");
 
-  const save = async () => {
-    if (!name || !amount) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!amount || !source) return;
 
     await addIncome({
-      id: crypto.randomUUID(),
-      name,
       amount: Number(amount),
+      source,
       date: new Date().toISOString(),
     });
 
-    setName("");
     setAmount("");
+    setSource("");
     onSaved();
   };
 
   return (
-    <div>
+    <form className="form" onSubmit={handleSubmit}>
       <h3>Add Income</h3>
 
-      <input placeholder="Income source"
-        value={name} onChange={e => setName(e.target.value)} />
+      <div className="form-row">
+        <input
+          className="form-control"
+          type="text"
+          placeholder="Source"
+          value={source}
+          onChange={(e) => setSource(e.target.value)}
+        />
 
-      <input type="number" placeholder="Amount"
-        value={amount} onChange={e => setAmount(e.target.value)} />
+        <input
+          className="form-control"
+          type="number"
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+      </div>
 
-      <button onClick={save}>Save</button>
-    </div>
+      <div className="form-actions">
+        <button type="submit">Add</button>
+      </div>
+    </form>
   );
-}
+};
+
+export default IncomeForm;

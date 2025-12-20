@@ -1,24 +1,31 @@
-import React from "react";
-import { useState } from "react";
-import { updateIncome, deleteIncome } from "../services/incomingService";
+import React, { useState } from "react";
+import {
+  updateIncome,
+  deleteIncome,
+} from "../services/incomingService";
 
-export default function IncomeList({ income, onChange }) {
+const IncomeList = ({ income = [], onChange }) => {
   const [editingId, setEditingId] = useState(null);
-  const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
 
-  const startEdit = (i) => {
-    setEditingId(i.id);
-    setName(i.name);
-    setAmount(i.amount);
+  const startEdit = (item) => {
+    setEditingId(item.id);
+    setAmount(item.amount);
+    setNote(item.note || "");
   };
 
   const saveEdit = async (id) => {
     await updateIncome(id, {
-      name,
       amount: Number(amount),
+      note,
     });
     setEditingId(null);
+    onChange();
+  };
+
+  const remove = async (id) => {
+    await deleteIncome(id);
     onChange();
   };
 
@@ -26,35 +33,42 @@ export default function IncomeList({ income, onChange }) {
     <div>
       <h3>Income</h3>
 
-      {income.map((i) => (
-        <div key={i.id}>
-          {editingId === i.id ? (
-            <>
-              <input value={name} onChange={(e) => setName(e.target.value)} />
-              <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-              <button onClick={() => saveEdit(i.id)}>💾</button>
-            </>
-          ) : (
-            <>
-              {i.name} – ₹{i.amount}
-              <button onClick={() => startEdit(i)}>✏️</button>
-            </>
-          )}
-
-          <button
-            onClick={async () => {
-              await deleteIncome(i.id);
-              onChange();
-            }}
-          >
-            ❌
-          </button>
-        </div>
-      ))}
+      {income.length === 0 ? (
+        <p>No income added</p>
+      ) : (
+        income.map((item) => (
+          <div key={item.id} className="list-item">
+            {editingId === item.id ? (
+              <>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+                <input
+                  placeholder="Note"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+                <button onClick={() => saveEdit(item.id)}>💾</button>
+                <button onClick={() => setEditingId(null)}>❌</button>
+              </>
+            ) : (
+              <>
+                <span className="item-name">
+                  ₹{item.amount} {item.note && `• ${item.note}`}
+                </span>
+                <div className="item-actions">
+                  <button onClick={() => startEdit(item)}>✏️</button>
+                  <button onClick={() => remove(item.id)}>🗑️</button>
+                </div>
+              </>
+            )}
+          </div>
+        ))
+      )}
     </div>
   );
-}
+};
+
+export default IncomeList;
