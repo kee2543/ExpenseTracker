@@ -1,4 +1,4 @@
-const { isIndianHoliday } = require("./holidayUtils.js");
+import { isIndianHoliday } from "./holidayUtils.js";
 
 // Check if a date is a weekend
 const isWeekend = (date) => {
@@ -39,7 +39,7 @@ const getFinancialMonthEnd = (currentDate = new Date()) => {
   return end;
 };
 
-module.exports = {
+export {
   isWeekend,
   isWorkingDay,
   getLastWorkingDayOfMonth,

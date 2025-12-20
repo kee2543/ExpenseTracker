@@ -1,16 +1,27 @@
-const { db } = require('../db/database');
-const { getFinancialMonthStart, getFinancialMonthEnd } = require('../utils/dateUtils.js');
+import { db } from "../db/database";
+import { getFinancialMonthStart, getFinancialMonthEnd } from "../utils/dateUtils";
 
-const getExpensesForCurrentMonth = async (currentDate = new Date()) => {
-    const start = getFinancialMonthStart(currentDate);
-    const end = getFinancialMonthEnd(currentDate);
-
-    const expenses = await db.expenses
-    .where('date')
-    .between(start.toISOString(), end.toISOString(), true, true)
-    .toArray();
-
-    return expenses;
+// ADD
+export const addExpense = async (expense) => {
+  await db.expenses.add(expense);
 };
 
-module.exports = { getExpensesForCurrentMonth };
+// UPDATE ✅
+export const updateExpense = async (id, updates) => {
+  await db.expenses.update(id, updates);
+};
+
+// DELETE
+export const deleteExpense = async (id) => {
+  await db.expenses.delete(id);
+};
+
+// READ (financial month)
+export const getExpensesForCurrentMonth = async (currentDate = new Date()) => {
+  const start = getFinancialMonthStart(currentDate);
+  const end = getFinancialMonthEnd(currentDate);
+  return db.expenses
+    .where("date")
+    .between(start.toISOString(), end.toISOString(), true, true)
+    .toArray();
+};
