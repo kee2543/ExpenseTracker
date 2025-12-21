@@ -5,16 +5,13 @@ const Navigation = () => {
     return (
         <nav className="nav-bar">
             <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>
-                <span style={{ fontSize: '20px' }}>📊</span>
-                <span>Dashboard</span>
+                <span>📊</span>
             </NavLink>
             <NavLink to="/reports" className={({ isActive }) => isActive ? 'active' : ''}>
-                <span style={{ fontSize: '20px' }}>📈</span>
-                <span>Reports</span>
+                <span>📈</span>
             </NavLink>
             <NavLink to="/settings" className={({ isActive }) => isActive ? 'active' : ''}>
-                <span style={{ fontSize: '20px' }}>⚙️</span>
-                <span>Settings</span>
+                <span>⚙️</span>
             </NavLink>
         </nav>
     );
