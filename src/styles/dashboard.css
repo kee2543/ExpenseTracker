@@ -13,7 +13,7 @@ body>div {
 /* ===== BASE STYLES ===== */
 body {
   background: #f8f9fe;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #525f7f;
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -436,8 +436,8 @@ tr:last-child td {
 
 /* ===== DARK MODE ===== */
 .dark {
-  background: #1a1b2e;
-  color: #a0a0c0;
+  background: #313647;
+  color: #FCF9EA;
 }
 
 .dark .card,
@@ -449,18 +449,22 @@ tr:last-child td {
 .dark h1,
 .dark h2,
 .dark h3 {
-  color: #fff;
+  color: #FCF9EA;
+}
+
+.dark .card h3 {
+  color: #FCF9EA;
 }
 
 .dark p {
-  color: #8898aa;
+  color: #FCF9EA;
 }
 
 .dark input,
 .dark select {
-  background: #1a1b2e;
+  background: #1B3C53;
   border-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  color: #FCF9EA;
 }
 
 .dark .list-item {

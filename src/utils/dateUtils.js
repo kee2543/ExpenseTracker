@@ -84,7 +84,14 @@ export const getFinancialMonthRange = (referenceDate, payDay = 1) => {
  * Navigate to the next financial month
  */
 export const getNextFinancialMonth = (currentStart, payDay) => {
+  if (payDay === 'lastWorkingDay') {
+    const nextRef = new Date(currentStart);
+    nextRef.setDate(nextRef.getDate() + 40);
+    return getFinancialMonthRangeBySettings(nextRef, 'lastWorkingDay');
+  }
+
   const nextMonth = new Date(currentStart);
+  nextMonth.setDate(15);
   nextMonth.setMonth(nextMonth.getMonth() + 1);
   return getFinancialMonthRange(nextMonth, payDay);
 };
@@ -93,7 +100,14 @@ export const getNextFinancialMonth = (currentStart, payDay) => {
  * Navigate to the previous financial month
  */
 export const getPreviousFinancialMonth = (currentStart, payDay) => {
+  if (payDay === 'lastWorkingDay') {
+    const prevRef = new Date(currentStart);
+    prevRef.setDate(prevRef.getDate() - 15);
+    return getFinancialMonthRangeBySettings(prevRef, 'lastWorkingDay');
+  }
+
   const prevMonth = new Date(currentStart);
+  prevMonth.setDate(15);
   prevMonth.setMonth(prevMonth.getMonth() - 1);
   return getFinancialMonthRange(prevMonth, payDay);
 };
