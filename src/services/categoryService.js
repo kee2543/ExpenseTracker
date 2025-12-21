@@ -1,28 +1,40 @@
+// src/services/categoryService.js
 import { db } from "../db/database";
 
-// Add a new category with name and color
-export const addCategory = async (category) => {
-    return await db.categories.add({
-        id: crypto.randomUUID(),
-        name: category.name,
-        color: category.color,
-    });
-};
+// Default categories (run once)
+const DEFAULT_CATEGORIES = [
+  { name: "Food" },
+  { name: "Travel" },
+  { name: "Rent" },
+  { name: "Shopping" },
+  { name: "Salary" },
+];
 
-// Get all categories
+// READ
 export const getCategories = async () => {
-    return await db.categories.toArray();
+  if (!db.categories) return [];
+  return await db.categories.toArray();
 };
 
-// Delete a category by id
+// INITIALIZE (called from Dashboard)
+export const initializeCategories = async () => {
+  const count = await db.categories.count();
+  if (count === 0) {
+    await db.categories.bulkAdd(DEFAULT_CATEGORIES);
+  }
+};
+
+// ADD
+export const addCategory = async (category) => {
+  await db.categories.add(category);
+};
+
+// UPDATE
+export const updateCategory = async (id, updates) => {
+  await db.categories.update(id, updates);
+};
+
+// DELETE
 export const deleteCategory = async (id) => {
-    return await db.categories.delete(id);
-};
-
-// Update an existing category
-export const updateCategory = async (id, updatedCategory) => {
-    return await db.categories.update(id, {
-        name: updatedCategory.name,
-        color: updatedCategory.color,
-    });
+  await db.categories.delete(id);
 };

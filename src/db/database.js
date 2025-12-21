@@ -1,13 +1,8 @@
-import Dexie from 'dexie';
+import Dexie from "dexie";
 
-export const db = new Dexie('ExpenseTrackerDB');
+export const db = new Dexie("FinanceDB");
 
-// Database schema
-db.version(2).stores({
-    expenses: 'id, date, categoryId, name, amount',
-    categories: 'id, name, color',
-    settings: 'key, value',
-    income: 'id, date, name, amount' // Track incoming money
+db.version(1).stores({
+  categories: "++id,name",
+  transactions: "++id,type,category,amount,date",
 });
-
-db.open().catch(err => console.error('Failed to open db:', err));
