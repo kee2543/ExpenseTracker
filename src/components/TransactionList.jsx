@@ -126,15 +126,22 @@ const TransactionList = ({ transactions, categories, onUpdate }) => {
 
                 <div className="item-content">
                   <div className="item-header">
-                    <span className="category-name">{tx.category}</span>
+                    <span className="category-name">
+                      {tx.note || tx.category}
+                    </span>
                     <span className={`amount ${tx.type}`}>
                       {tx.type === 'income' ? '+' : '-'} ₹{tx.amount}
                     </span>
                   </div>
 
                   <div className="item-meta">
+                    {tx.note && (
+                      <>
+                        <span style={{ fontWeight: '500', color: '#525f7f' }}>{tx.category}</span>
+                        <span> • </span>
+                      </>
+                    )}
                     <span className="date">{formatDate(tx.date)}</span>
-                    {tx.note && <span className="note-preview">• {tx.note}</span>}
                   </div>
                 </div>
 
