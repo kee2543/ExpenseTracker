@@ -16,3 +16,52 @@ export const getMonthlyIncome = async (currentDate = new Date()) => {
         .toArray();
     return incomeRecords.reduce((sum, i) => sum + (i.amount || 0), 0);
 };
+
+// LocalStorage-based settings for theme and payDay
+const SETTINGS_KEY = 'expenseTrackerSettings';
+
+const defaultSettings = {
+    theme: 'light',
+    payDay: 1,
+};
+
+/**
+ * Get all settings from localStorage
+ */
+export const getSettings = () => {
+    try {
+        const stored = localStorage.getItem(SETTINGS_KEY);
+        return stored ? { ...defaultSettings, ...JSON.parse(stored) } : defaultSettings;
+    } catch (error) {
+        console.error('Error reading settings:', error);
+        return defaultSettings;
+    }
+};
+
+/**
+ * Save settings to localStorage
+ */
+export const saveSettings = (settings) => {
+    try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    } catch (error) {
+        console.error('Error saving settings:', error);
+    }
+};
+
+/**
+ * Get a specific setting
+ */
+export const getSetting = (key) => {
+    const settings = getSettings();
+    return settings[key];
+};
+
+/**
+ * Update a specific setting
+ */
+export const updateSetting = (key, value) => {
+    const settings = getSettings();
+    settings[key] = value;
+    saveSettings(settings);
+};

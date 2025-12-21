@@ -38,39 +38,50 @@ const CategoryManager = () => {
     <div>
       <h3>Categories</h3>
 
-      <div className="form-row">
+      <div className="category-input-group">
         <input
-          placeholder="New category"
+          placeholder="New category..."
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <button onClick={add}>Add</button>
+        <button onClick={add} disabled={!name} className="btn-minimal">Add</button>
       </div>
 
-      {categories.map((c) => (
-        <div key={c.id} className="list-item">
-          {editingId === c.id ? (
-            <>
-              <input
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-              />
-              <div className="item-actions">
-                <button onClick={() => save(c.id)}>💾</button>
-                <button onClick={() => setEditingId(null)}>❌</button>
-              </div>
-            </>
-          ) : (
-            <>
-              <span className="item-name">{c.name}</span>
-              <div className="item-actions">
-                <button onClick={() => { setEditingId(c.id); setEditValue(c.name); }}>✏️</button>
-                <button onClick={() => deleteCategory(c.id).then(load)}>🗑️</button>
-              </div>
-            </>
-          )}
-        </div>
-      ))}
+      <div className="category-list">
+        {categories.map((c) => (
+          <div key={c.id} className="category-chip">
+            {editingId === c.id ? (
+              <>
+                <input
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  style={{ padding: '4px 8px', fontSize: '12px' }}
+                  autoFocus
+                />
+                <button onClick={() => save(c.id)} style={{ padding: '2px 6px', fontSize: '10px' }}>💾</button>
+                <button onClick={() => setEditingId(null)} style={{ padding: '2px 6px', fontSize: '10px', background: '#ccc' }}>❌</button>
+              </>
+            ) : (
+              <>
+                <span onClick={() => { setEditingId(c.id); setEditValue(c.name); }} style={{ cursor: 'pointer' }}>
+                  {c.name}
+                </span>
+                <button
+                  className="delete-chip-btn"
+                  onClick={() => deleteCategory(c.id).then(load)}
+                  title="Delete category"
+                >
+                  ×
+                </button>
+              </>
+            )}
+          </div>
+        ))}
+
+        {categories.length === 0 && (
+          <p style={{ opacity: 0.5, fontSize: '13px' }}>No categories added yet.</p>
+        )}
+      </div>
     </div>
   );
 };

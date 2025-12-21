@@ -10,15 +10,25 @@ export const addTransaction = async (transaction) => {
   }
 };
 
-// Get all transactions
-export const getTransactions = async () => {
+// Get all transactions, optionally filtered by date range
+export const getTransactions = async (startDate = null, endDate = null) => {
   if (!db.transactions) return [];
-  return await db.transactions.toArray();
+
+  if (startDate && endDate) {
+    const transactions = await db.transactions
+      .where('date')
+      .between(startDate.toISOString(), endDate.toISOString(), true, true)
+      .toArray();
+    return transactions.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id);
+  }
+
+  const transactions = await db.transactions.toArray();
+  return transactions.sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id);
 };
 
 
-export const getSummary = async () => {
-  const all = await db.transactions.toArray();
+export const getSummary = async (startDate = null, endDate = null) => {
+  const all = await getTransactions(startDate, endDate);
 
   let income = 0;
   let spent = 0;
@@ -33,4 +43,24 @@ export const getSummary = async () => {
     spent,
     remaining: income - spent
   };
+};
+
+// Update a transaction
+export const updateTransaction = async (id, updates) => {
+  try {
+    await db.transactions.update(id, updates);
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    throw error;
+  }
+};
+
+// Delete a transaction
+export const deleteTransaction = async (id) => {
+  try {
+    await db.transactions.delete(id);
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
+    throw error;
+  }
 };
