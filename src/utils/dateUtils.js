@@ -61,16 +61,33 @@ export const getFinancialMonthRange = (referenceDate, payDay = 1) => {
   const month = referenceDate.getMonth();
   const day = referenceDate.getDate();
 
+  // Helper to get days in a month
+  const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
+
+  // Clamp payDay to the valid days in each month
+  const clampDay = (p, days) => Math.min(p, days);
+
   let startDate, endDate;
 
-  if (day >= payDay) {
-    // We're in the current financial month
-    startDate = new Date(year, month, payDay);
-    endDate = new Date(year, month + 1, payDay - 1);
+  const effectivePayDay = clampDay(payDay, getDaysInMonth(year, month));
+
+  if (day >= effectivePayDay) {
+    // Current financial month
+    startDate = new Date(year, month, effectivePayDay);
+
+    // Ends in next month
+    const nextMonthDays = getDaysInMonth(year, month + 1);
+    const nextEffectiveDay = clampDay(payDay, nextMonthDays);
+    endDate = new Date(year, month + 1, nextEffectiveDay - 1);
   } else {
-    // We're still in the previous financial month
-    startDate = new Date(year, month - 1, payDay);
-    endDate = new Date(year, month, payDay - 1);
+    // Previous financial month
+    const prevMonthDays = getDaysInMonth(year, month - 1);
+    const prevEffectiveDay = clampDay(payDay, prevMonthDays);
+
+    startDate = new Date(year, month - 1, prevEffectiveDay);
+
+    // Ends in current month
+    endDate = new Date(year, month, effectivePayDay - 1);
   }
 
   // Set time to start/end of day
@@ -85,15 +102,17 @@ export const getFinancialMonthRange = (referenceDate, payDay = 1) => {
  */
 export const getNextFinancialMonth = (currentStart, payDay) => {
   if (payDay === 'lastWorkingDay') {
-    const nextRef = new Date(currentStart);
-    nextRef.setDate(nextRef.getDate() + 40);
-    return getFinancialMonthRangeBySettings(nextRef, 'lastWorkingDay');
+    const currentRange = getFinancialMonthRangeBySettings(currentStart, 'lastWorkingDay');
+    const nextStart = new Date(currentRange.end);
+    nextStart.setDate(nextStart.getDate() + 1);
+    return getFinancialMonthRangeBySettings(nextStart, 'lastWorkingDay');
   }
 
-  const nextMonth = new Date(currentStart);
-  nextMonth.setDate(15);
-  nextMonth.setMonth(nextMonth.getMonth() + 1);
-  return getFinancialMonthRange(nextMonth, payDay);
+  // Fixed Day logic
+  const currentRange = getFinancialMonthRange(currentStart, payDay);
+  const nextStart = new Date(currentRange.end);
+  nextStart.setDate(nextStart.getDate() + 1);
+  return getFinancialMonthRange(nextStart, payDay);
 };
 
 /**
@@ -102,14 +121,13 @@ export const getNextFinancialMonth = (currentStart, payDay) => {
 export const getPreviousFinancialMonth = (currentStart, payDay) => {
   if (payDay === 'lastWorkingDay') {
     const prevRef = new Date(currentStart);
-    prevRef.setDate(prevRef.getDate() - 15);
+    prevRef.setDate(prevRef.getDate() - 1);
     return getFinancialMonthRangeBySettings(prevRef, 'lastWorkingDay');
   }
 
-  const prevMonth = new Date(currentStart);
-  prevMonth.setDate(15);
-  prevMonth.setMonth(prevMonth.getMonth() - 1);
-  return getFinancialMonthRange(prevMonth, payDay);
+  const prevRef = new Date(currentStart);
+  prevRef.setDate(prevRef.getDate() - 1);
+  return getFinancialMonthRange(prevRef, payDay);
 };
 
 /**
